@@ -23,7 +23,7 @@ class Linforuangan extends CI_Controller {
     $data['tanggal_awal']   = date("Y-m-d");
     $data['tanggal_akhir']  = date("Y-m-d");
     $data['title']          = 'Laporan Info Ruangan';
-		$data['content'] 		    = 'laporan/linforuangan';
+    $data['content'] 	    = 'Laporan/linforuangan';
     $data['laporan']        = $this->Linforuangan_model->getLaporan();
 		$data['breadcrum'] 		  = array(
   															array("ColdStorage PT Dirgantara Indonesia",'#'),

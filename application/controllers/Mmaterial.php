@@ -147,7 +147,7 @@ class Mmaterial extends CI_Controller {
 			$options->set('isRemoteEnabled', true);
 			$dompdf = new Dompdf($options);
 
-			$html = $this->load->view('mmaterial/printqrcode', $data, true);
+			$html = $this->load->view('Mmaterial/printqrcode', $data, true);
 			$dompdf->loadHtml($html);
 
 			// (Optional) Setup the paper size and orientation
