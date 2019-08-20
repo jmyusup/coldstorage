@@ -6,18 +6,18 @@ require 'application/libraries/REST_Controller.php';
 
 class Login extends REST_Controller
 {
-	public function index_post()
+	public function filter_get()
 	{
         header('Access-Control-Allow-Origin: *');
 		// Parameter
-		$username = $this->post('username');
-		$password = $this->post('password');
+		$username = $this->get('username');
+		$password = $this->get('password');
 
 		// Query Database
 		$this->db->where('username', $username);
 		$this->db->where('password', md5($password));
 		$query = $this->db->get('muser');
-		$data = $query->row();
+		$data = $query->result();
 
 		// Response
 		if ($query->num_rows() > 0) {

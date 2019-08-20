@@ -40,6 +40,54 @@ class Temperature extends REST_Controller
 		$suhu = $data['data']['temperature'];
 		$kelembaban = $data['data']['humidity'];
 
+		if ($suhu > -18) {
+			// API access key from Google API's Console
+			define( 'API_ACCESS_KEY', 'AAAAKGQdmfs:APA91bGIewuTtE-guUR1GL_DRHmQKy0vHnRfkGZ66GuJShyoB8cKrLjFE0pCGW0MomDwOBdB7V2hUXN9I5vRlmq4_m4TQICfyaN3hA96HbAjHaSJ6zjuO8JffjnLGihKNuwnOfdlD9gw');
+			$to = "e_9Wf0XHo6E:APA91bHttAk3AeTWyoIxxGPEvFrSIcCaCWhp376bm2wwfotpEOn0y6AXQIfbqIEIvjg1gfMbcy2mCkmTWC98V33yL4nx2bXrWlxnhNODsZa2AjBV_d3vcaKERr3txufQ1pOdcnXaREpD";
+			// prep the bundle
+			$msg = array
+			(
+				'body'   => 'Suhu lebih dari -18 C',
+				'title'     => 'WARNING!!!',
+				// 'subtitle'  => 'This is a subtitle. subtitle',
+				// 'tickerText'    => 'Ticker text here...Ticker text here...Ticker text here',
+				'vibrate'   => 1,
+				'sound'     => 1,
+				'largeIcon' => 'large_icon',
+				'smallIcon' => 'small_icon'
+			);
+			$data = array
+			(
+				'landing_page'  => 'temperature',
+				'temperature'   => $suhu
+			);
+			$fields = array
+			(
+				'priority'      =>'high',
+				'restricted_package_name'=>'',
+				'to'                => $to,
+				'notification'      => $msg,
+				'data'              => $data
+			);
+			
+			$headers = array
+			(
+				'Authorization: key=' . API_ACCESS_KEY,
+				'Content-Type: application/json'
+			);
+			
+			$ch = curl_init();
+			curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
+			curl_setopt( $ch,CURLOPT_POST, true );
+			curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+			curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+			curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+			curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+			$result = curl_exec($ch );
+			curl_close( $ch );
+			echo $result;
+		}
+
 		// Query Database
 		$data = array();
 		$data['tanggal'] = date("Y-m-d H:i:s");
