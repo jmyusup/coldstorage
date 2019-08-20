@@ -194,7 +194,8 @@ class Material extends REST_Controller
 
 	public function finished_get()
 	{
-        header('Access-Control-Allow-Origin: *');
+        	header('Access-Control-Allow-Origin: *');
+
 		// Parameter
 		$idmaterial = $this->get('idmaterial');
 		$jamselesai = new DateTime();
@@ -207,9 +208,9 @@ class Material extends REST_Controller
 		$query = $this->db->get('mmaterial_history');
 		$row = $query->row();
 
-		$jampemakaian = date_create_from_format('Y-m-d H:i:s', $row->jampemakaian);	
+		$jampemakaian = date_create_from_format('Y-m-d H:i:s', $row->jampemakaian);
 		$diff = date_diff($jampemakaian, $jamselesai);
-		$waktuterpakai = round(abs($diff->i) / 60) * 60;
+		$waktuterpakai = round(abs($diff->i) / 60);
 
 		if ($row) {
 			$idhistory = $row->idhistory;
