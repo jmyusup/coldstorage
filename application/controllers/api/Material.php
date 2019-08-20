@@ -153,7 +153,7 @@ class Material extends REST_Controller
 		// Parameter
 		$idmaterial = $this->get('idmaterial');
 		$tanggal = date("Y-m-d");
-		$jampemakaian = date("H:i:s");
+		$jampemakaian = date("Y-m-d H:i:s");
 
 		$this->db->select('umur');
 		$this->db->where('id', $idmaterial);
@@ -161,7 +161,7 @@ class Material extends REST_Controller
 		$row = $query->row();
 
 		if ($row) {
-			$kadaluarsa = date("Y-m-d H:i:s", strtotime($tanggal." ".$jampemakaian."+".$row->umur." hours"));
+			$kadaluarsa = date("Y-m-d H:i:s", strtotime($jampemakaian."+".$row->umur." hours"));
 		}
 
 		// Query Database
@@ -173,7 +173,6 @@ class Material extends REST_Controller
 		$datadetail['idmaterial'] = $idmaterial;
 		$datadetail['tanggal'] = $tanggal;
 		$datadetail['jampemakaian'] = $jampemakaian;
-		$datadetail['kadaluarsa'] = $kadaluarsa;
 
 		// Query Database & Response
 
@@ -188,7 +187,7 @@ class Material extends REST_Controller
         header('Access-Control-Allow-Origin: *');
 		// Parameter
 		$idmaterial = $this->get('idmaterial');
-		$jamselesai = date("H:i:s");
+		$jamselesai = new DateTime();
 
 		$this->db->select('mmaterial_history.id as idhistory, jampemakaian, umur');
 		$this->db->order_by('idhistory','desc');
@@ -198,10 +197,13 @@ class Material extends REST_Controller
 		$query = $this->db->get('mmaterial_history');
 		$row = $query->row();
 
-		$waktuterpakai = $jamselesai-$row->jampemakaian;
+		$jampemakaian = date_create_from_format('Y-m-d H:i:s', $row->jampemakaian);	
+		$diff = date_diff($jampemakaian, $jamselesai);
+		$waktuterpakai = round(abs($diff->i) / 60) * 60;
+
 		if ($row) {
 			$idhistory = $row->idhistory;
-			$umur = $row->umur - $waktuterpakai;
+			$umur = ((int) $row->umur) - $waktuterpakai;
 		}
 
 		// Query Database
@@ -211,7 +213,8 @@ class Material extends REST_Controller
 		
 		// Query Database
 		$datadetail = array();
-		$datadetail['jamselesai'] = $jamselesai;		
+		$datadetail['jamselesai'] = $jamselesai->format('Y-m-d H:i:s');
+
 
 		// Query Database & Response
 		$this->db->where('id', $idhistory);
