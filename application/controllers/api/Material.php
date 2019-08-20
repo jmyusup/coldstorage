@@ -131,6 +131,14 @@ class Material extends REST_Controller
 		$query = $this->db->get('mmaterial');
 		$data = $query->result();
 
+		foreach ($data as &$item) {
+			$item->jampemakaian = (new DateTime($item->jampemakaian))->add(new DateInterval('PT7H'))->format('Y-m-d H:i:s');
+
+			if ($item->jamselesai != null)
+				$item->jamselesai = (new DateTime($item->jamselesai))->add(new DateInterval('PT7H'))->format('Y-m-d H:i:s');
+
+			$item->kadaluarsa = (new DateTime($item->kadaluarsa))->add(new DateInterval('PT7H'))->format('Y-m-d H:i:s');		}
+
 		// Response
 		if ($query->num_rows() > 0) {
 			$this->response([
@@ -149,7 +157,8 @@ class Material extends REST_Controller
 
 	public function useit_get()
 	{
-        header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Allow-Origin: *');
+
 		// Parameter
 		$idmaterial = $this->get('idmaterial');
 		$tanggal = date("Y-m-d");
@@ -173,6 +182,7 @@ class Material extends REST_Controller
 		$datadetail['idmaterial'] = $idmaterial;
 		$datadetail['tanggal'] = $tanggal;
 		$datadetail['jampemakaian'] = $jampemakaian;
+		$datadetail['kadaluarsa'] = $kadaluarsa;
 
 		// Query Database & Response
 
